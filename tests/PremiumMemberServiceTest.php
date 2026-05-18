@@ -28,8 +28,9 @@ class PremiumMemberServiceTest extends KernelTestCase
 
         self::bootKernel();
         $this->premiumMemberService = static::getContainer()->get(PremiumMemberService::class);
-
     }
+    // Remplissez les test restants :)
+    // Bon courage héhé :)
 
     /**
      * Test la fonction generateMemberProfile pour un cas de SUCCES.
@@ -40,10 +41,10 @@ class PremiumMemberServiceTest extends KernelTestCase
      * - assertMatchesRegularExpression
      * - Voir la doc pour les autres asserts : https://docs.phpunit.de/en/13.1/assertions.html
      */
-    // public function testGenerateMemberProfileSuccess(): void
-    // {
+    public function testGenerateMemberProfileSuccess(): void
+    {
         
-    // }
+    }
 
     /**
      * Test la fonction generateMemberProfile pour un cas d'ECHEC lorsque le nom d'utilisateur est vide.
@@ -58,20 +59,111 @@ class PremiumMemberServiceTest extends KernelTestCase
         $this->premiumMemberService->generateMemberProfile("", 25, ['Coding', 'Gaming']);
     }
 
-    public function testGenerateMemberProfileThrowsExceptionForUnderage() : void
+    public function testGenerateMemberProfileThrowsExceptionForUnderage(): void
     {
         // To do...
         // $this->premiumMemberService->...
     }
 
-    public function testGenerateMemberProfileThrowsExceptionForEmptyUsername() : void
+    public function testGenerateMemberProfileThrowsExceptionForEmptyUsername(): void
     {
         // To do...
     }
 
-    public function testApplyPromoCodeVip() : void
+    public function testApplyPromoCodeVip(): void
+    {
+        // To do...
+    }
+    
+    // On y est presque...
+
+    public function testIsEligibleForUpgrade(): void
     {
         // To do...
     }
 
+
+    public function testApplyPromoCodeSummer50(): void
+    {
+        // Todo ...
+    }
+
+    public function testApplyPromoCodeThrowExceptionInvalid(): void
+    {
+        // Todo ...
+    }
+
+    public function testApplyPromoCodeNullAmountUnchanged(): void
+    {
+        // Todo ...
+    }
+
+    public function testIsEligibleForUpgradeSuccess(): void
+    {
+        // Todo ...
+    }
+
+    public function testIsEligibleForUpgradeUnderAge(): void
+    {
+        // Todo ...
+    }
+
+    // C'est encore loin ? 8( 
+
+    public function testIsEligibleForUpgradeInsufficientInterests(): void
+    {
+        // Todo ...
+    }
+
+    public function testIsEligibleForUpgradeInsufficientSpent(): void
+    {
+        // Todo ...
+    }
+
+    public function testCalculateLoyaltyPointsStandard(): void
+    {
+        // Todo ...
+    }
+
+    public function testCalculateLoyaltyPointsPremium(): void
+    {
+        // Todo ...
+    }
+
+    public function testCalculateLoyaltyPointsNegativeThrowException(): void
+    {
+        // Todo ...
+    }
+
+    public function testSummarizeSpending(): void
+    {
+        // Todo ...
+    }
+
+    public function testSummarizeSpendingEmptyThrowException(): void
+    {
+        // Todo ...
+    }
+
+    // On a presque fini :)
+
+    public function testRenewSubscription1Month(): void
+    {
+        // Todo ...
+    }
+
+    public function testRenewSubscriptionInvalidDurationThrowException(): void
+    {
+        // Todo ...
+    }
+
+    public function testAnonymizeProfile(): void
+    {
+        // Todo ...
+    }
+
+    public function testAnonymizeProfileInvalidThrowException(): void
+    {
+        // Todo ...
+    }
 }

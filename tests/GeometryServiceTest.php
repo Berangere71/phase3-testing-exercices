@@ -26,25 +26,25 @@ class GeometryServiceTest extends KernelTestCase
 
     // Remplissez les test restants :)
 
-    // public function testCalculateCircleArea() : void{
+    public function testCalculateCircleArea() : void{
 
-    //     // To do...
-    // }
-    // public function testCalculateRectangleArea() : void{
+        // To do...
+    }
+    public function testCalculateRectangleArea() : void{
 
-    //     // To do...
-    // }
-    // public function testCalculateTriangleArea() : void{
-    //     // To do...
-    // }
-    // public function testCalculateCubeVolume() : void{
-    //     // To do...
+        // To do...
+    }
+    public function testCalculateTriangleArea() : void{
+        // To do...
+    }
+    public function testCalculateCubeVolume() : void{
+        // To do...
 
-    // }
-    // public function testCalculateCylinderVolume() : void{
-    //     // To do...
-    // }
-    // public function testCalculateConeVolume() : void{
-    //     // To do...
-    // }
+    }
+    public function testCalculateCylinderVolume() : void{
+        // To do...
+    }
+    public function testCalculateConeVolume() : void{
+        // To do...
+    }
 }

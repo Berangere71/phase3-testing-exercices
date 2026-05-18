@@ -75,4 +75,103 @@ class PremiumMemberService
 
         return $amount;
     }
+
+    /**
+     * Vérifie si un membre est éligible à une mise à niveau premium.
+     * - Le membre doit avoir au moins 3 centres d'intérêt
+     * - Le membre doit être âgé d'au moins 18 ans
+     * - Le montant dépensé doit être supérieur ou égal à 100
+     */
+    public function isEligibleForUpgrade(int $age, array $interests, float $totalSpent): bool
+    {
+        if ($age < 18) {
+            return false;
+        }
+
+        if (count($interests) < 3) {
+            return false;
+        }
+
+        if ($totalSpent < 100) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Calcule les points de fidélité d'un membre en fonction de ses achats.
+     * - Chaque euro dépensé rapporte 10 points
+     * - Les membres premium obtiennent un bonus de 50% sur leurs points
+     * - Le montant doit être positif
+     */
+    public function calculateLoyaltyPoints(float $amount, bool $isPremium = false): int
+    {
+        if ($amount < 0) {
+            throw new InvalidArgumentException("Le montant ne peut pas être négatif.");
+        }
+
+        $points = (int) ($amount * 10);
+
+        if ($isPremium) {
+            $points = (int) ($points * 1.5);
+        }
+
+        return $points;
+    }
+
+    /**
+     * Génère un résumé des dépenses d'un membre.
+     * - Le tableau de transactions ne peut pas être vide
+     * - Retourne un tableau avec le total, la moyenne, le minimum et le maximum des dépenses
+     */
+    public function summarizeSpending(array $transactions): array
+    {
+        if (empty($transactions)) {
+            throw new InvalidArgumentException("Le tableau de transactions ne peut pas être vide.");
+        }
+
+        return [
+            'total'   => array_sum($transactions),
+            'average' => array_sum($transactions) / count($transactions),
+            'min'     => min($transactions),
+            'max'     => max($transactions),
+        ];
+    }
+
+    /**
+     * Renouvelle l'abonnement premium d'un membre.
+     * - La durée doit être de 1, 6 ou 12 mois
+     * - Retourne la nouvelle date d'expiration au format Y-m-d
+     */
+    public function renewSubscription(int $months): string
+    {
+        if (!in_array($months, [1, 6, 12])) {
+            throw new InvalidArgumentException("La durée doit être de 1, 6 ou 12 mois.");
+        }
+
+        return date('Y-m-d', strtotime("+{$months} months"));
+    }
+
+    /**
+     * Anonymise le profil d'un membre.
+     * - Le profil doit contenir les champs id, meta et preferences
+     * - Le nom d'utilisateur est remplacé par "anonymous"
+     * - Les centres d'intérêt sont vidés
+     * - L'âge est remplacé par 0
+     */
+    public function anonymizeProfile(array $profile): array
+    {
+        if (!isset($profile['id'], $profile['meta'], $profile['preferences'])) {
+            throw new InvalidArgumentException("Le profil est invalide ou incomplet.");
+        }
+
+        $profile['meta']['username']   = 'anonymous';
+        $profile['meta']['clean_name'] = 'anonymous';
+        $profile['meta']['age']        = 0;
+        $profile['preferences']['interests'] = [];
+        $profile['preferences']['count']     = 0;
+
+        return $profile;
+    }
 }
