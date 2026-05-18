@@ -28,23 +28,53 @@ class GeometryServiceTest extends KernelTestCase
 
     public function testCalculateCircleArea() : void{
 
-        // To do...
+       self::bootKernel();
+       $this->geoService = static::getContainer()->get(GeometryService::class);
+
+       $circleArea = $this->geoService->calculateCircleArea(5);
+       $this->assertEqualsWithDelta(78.53,$circleArea,0.1,"La surface d'un cercle de rayon 5 doit être égal à 78,54");
     }
     public function testCalculateRectangleArea() : void{
 
-        // To do...
+       self::bootKernel();
+       $this->geoService = static::getContainer()->get(GeometryService::class);
+
+       $rectangleArea = $this->geoService->calculateRectangleArea(5,3);
+       $this->assertEquals(15,$rectangleArea,"La surface d'un rectangle de longueur 5 et de largeur 3 doit être égal à 15");
     }
+    
     public function testCalculateTriangleArea() : void{
-        // To do...
+       
+        self::bootKernel();
+       $this->geoService = static::getContainer()->get(GeometryService::class);
+
+       $triangleArea = $this->geoService->calculateTriangleArea(5,8);
+       $this->assertEquals(20,$triangleArea,"La surface d'un triangle de base 5 et hauteur 8 doit être égal à 20");
     }
     public function testCalculateCubeVolume() : void{
-        // To do...
+       
+        self::bootKernel();
+       $this->geoService = static::getContainer()->get(GeometryService::class);
 
+       $cubeVolume = $this->geoService->calculateCubeVolume(5);
+       $this->assertEquals(125,$cubeVolume,"Le volume d'une cube de côté 5 doit être égal à 125");
     }
+
+    
     public function testCalculateCylinderVolume() : void{
-        // To do...
+
+        self::bootKernel();
+       $this->geoService = static::getContainer()->get(GeometryService::class);
+
+       $cylinderVolume = $this->geoService->calculateCylinderVolume(5,6);
+       $this->assertEqualsWithDelta(471.23,$cylinderVolume,0.1,"Le volume d'un cylindre de rayon 5 et hauteur 6 doit être égal à 471,23");
     }
     public function testCalculateConeVolume() : void{
-        // To do...
+        
+        self::bootKernel();
+       $this->geoService = static::getContainer()->get(GeometryService::class);
+
+       $coneVolume = $this->geoService->calculateConeVolume(5,6);
+       $this->assertEqualsWithDelta(157.08,$coneVolume,0.1,"Le volume d'un cône de rayon 5 et hauteur 6 doit être égal à 157");
     }
 }
