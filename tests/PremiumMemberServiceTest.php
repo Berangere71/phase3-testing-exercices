@@ -43,7 +43,40 @@ class PremiumMemberServiceTest extends KernelTestCase
      */
     public function testGenerateMemberProfileSuccess(): void
     {
-        
+        $profile = $this->premiumMemberService->generateMemberProfile("bob", 18, ['Coding', 'Gaming']);
+
+        //vérifie que c'est un tableau
+        $this->assertIsArray($profile);
+
+        //Vérifie les colonnes du tableau
+        $this->assertArrayHaskey('id', $profile);
+        $this->assertArrayHaskey('meta', $profile);
+        $this->assertArrayHaskey('preferences', $profile);
+
+        //vérifier l'id qui doit commencer par usr_
+        $this->assertStringStartsWith('usr_', $profile['id']);
+
+        // je vérifie que le nom est bien bob
+        $this->assertEquals('Bob', $profile['meta']['clean_name']);
+
+        // je vérifie que l'âge est bien 18
+        $this->assertEquals(18, $profile['meta']['age']);
+
+        //je vérifie les valeurs, le type exact et l'ordre exact
+        $this->assertSame(
+            ['coding', 'gaming'],
+            $profile['preferences']['interests']
+        );
+
+        // je vérifie qu'il y est bien 2 centres d'intêret
+        $this->assertEquals(2, $profile['preferences']['count']);
+
+        //je vérifie que le status est valide
+        $this->assertEquals('active', $profile['status']);
+
+        //Je vérifie la date du jour est enregistrée
+        $this->assertEquals(date('Y-m-d'), $profile['created_at']);
+
     }
 
     /**
@@ -51,7 +84,7 @@ class PremiumMemberServiceTest extends KernelTestCase
      */
     public function testGenerateMemberProfileEmptyUsername(): void
     {
-        // ExpectExeception prepart la levé d'exeption, pour les exeptions on utilise 
+        // ExpectExeception prepare la levé d'exeption, pour les exeptions on utilise 
         // expect plutot que assert
         // Utilisez cette exemple pour tester les autres expections dans d'autre test.
         $this->expectException(InvalidArgumentException::class);
@@ -59,97 +92,153 @@ class PremiumMemberServiceTest extends KernelTestCase
         $this->premiumMemberService->generateMemberProfile("", 25, ['Coding', 'Gaming']);
     }
 
+    //Vérifie que la personne est majeure
     public function testGenerateMemberProfileThrowsExceptionForUnderage(): void
     {
-        // To do...
-        // $this->premiumMemberService->...
+        $this->expectException((InvalidArgumentException::class));
+        $this->expectExceptionMessage('le membre doit être majeur');
+
+        $this->premiumMemberService->generateMemberProfile('Bob', 16, ['coding']);
+
     }
 
+    //vérifier que l'username ne soit pas vide
     public function testGenerateMemberProfileThrowsExceptionForEmptyUsername(): void
     {
-        // To do...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le nom d'utilisateur ne peut pas être vide.");
+        $this->premiumMemberService->generateMemberProfile("", 25, ['Coding', 'Gaming']);
     }
 
+    //vérifier la réduction de 20%
     public function testApplyPromoCodeVip(): void
     {
-        // To do...
+        $result = $this->premiumMemberService->applyPromoCode(100, 'VP20');
+        $this->assertEquals(80, $result);
     }
-    
-    // On y est presque...
 
     public function testIsEligibleForUpgrade(): void
     {
-        // To do...
+        $result = $this->premiumMemberService->isEligibleForUpgrade(
+            25,
+            ['coding', 'gaming', 'music'],
+            150 );
+
+        $this->assertTrue($result);
     }
 
-
+    //vérifier la réduction de 50%
     public function testApplyPromoCodeSummer50(): void
     {
-        // Todo ...
+        $result = $this->premiumMemberService->applyPromoCode(100, 'SUMMER50');
+        $this->assertEquals(50, $result);
     }
 
+    //je vérifie que mon code promo est invalide
     public function testApplyPromoCodeThrowExceptionInvalid(): void
     {
-        // Todo ...
-    }
+        $this->expectException((InvalidArgumentException::class));
 
+        $this->premiumMemberService->applyPromoCode(100, 'INVALID');
+    }
+    // je vérifie si le code est nul alors le montant reste identique
     public function testApplyPromoCodeNullAmountUnchanged(): void
     {
-        // Todo ...
+        $result = $this->premiumMemberService->applyPromoCode(100, null);
+        $this->assertEquals(100,$result);        
     }
 
+    // je vérifie si les 3 conditions sont exacts
     public function testIsEligibleForUpgradeSuccess(): void
     {
-        // Todo ...
+        $result = $this->premiumMemberService->isEligibleForUpgrade(
+            25,
+            ['coding', 'gaming', 'music'],
+            150
+        );
+        $this->assertTrue($result);
+
     }
 
+    //Je vérifie si l'âge est exact
     public function testIsEligibleForUpgradeUnderAge(): void
     {
-        // Todo ...
+        $result = $this->premiumMemberService->isEligibleForUpgrade(
+            16,
+            ['coding', 'gaming', 'music'],
+            150
+        );
+        $this->assertFalse($result);
     }
 
-    // C'est encore loin ? 8( 
-
+    
+    // Je vérifie le nombre de centre d'intêrets
     public function testIsEligibleForUpgradeInsufficientInterests(): void
     {
-        // Todo ...
+        $result = $this->premiumMemberService->isEligibleForUpgrade(
+            25,
+            ['music'],
+            150,
+        );
+        $this->assertFalse($result);
     }
 
+    //je vérifie le montant dépensé
     public function testIsEligibleForUpgradeInsufficientSpent(): void
     {
-        // Todo ...
+        $result = $this->premiumMemberService->isEligibleForUpgrade(
+            25,
+            ['coding', 'gaming', 'music'],
+            50,
+        );
     }
 
+    // je vérifie le calcul des points cumulés avec le montant de mes achats
     public function testCalculateLoyaltyPointsStandard(): void
     {
-        // Todo ...
+        $points = $this->premiumMemberService->calculateLoyaltyPoints(10);
+        $this->assertEquals(100,$points);
     }
 
+    //Je vérifie le calcul des points cumulés avec le montant de mes achats, j'ai un bonus de 50% si je suis membre premium
     public function testCalculateLoyaltyPointsPremium(): void
     {
-        // Todo ...
+        $points = $this->premiumMemberService->calculateLoyaltyPoints(10, true);
+        $this->assertEquals(150, $points);
     }
 
+    // je vérifie si le montant est négatif
     public function testCalculateLoyaltyPointsNegativeThrowException(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Le montant ne peut pas être négatif');
+        $this->premiumMemberService->calculateLoyaltyPoints(-10);
     }
 
+    // je vérifie s'il effectue les calcul de min, max, total et moyenne
     public function testSummarizeSpending(): void
     {
-        // Todo ...
+        $summary = $this->premiumMemberService->summarizeSpending([10, 20, 30]);
+        $this->assertEquals(60, $summary['total']);
+        $this->assertEquals(20, $summary['average']);
+        $this->assertEquals(10, $summary['min']);
+        $this->assertEquals(30, $summary['max']);
     }
 
+    //Je vérifie que le tableau n'est pas vide
     public function testSummarizeSpendingEmptyThrowException(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Le tableau de transaction ne peut pas être vide');
+        $this->premiumMemberService->summarizeSpending([]);
     }
 
-    // On a presque fini :)
 
     public function testRenewSubscription1Month(): void
     {
-        // Todo ...
+        $date = $this->premiumMemberService->renewSubscription(1);
+        
+
     }
 
     public function testRenewSubscriptionInvalidDurationThrowException(): void

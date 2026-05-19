@@ -12,8 +12,8 @@ class PremiumMemberService
     /**
      * Génère un rapport complet sur le profil d'un membre.
      * Specifications : 
-     * - L'idenitifiant du membre doit être unique et préfixé par "usr_"
-     * - Le nom d'utilisateur doit être nettoyé (trim et lowercase) et placé dans le champs meta.clean_name
+     * - L'identifiant du membre doit être unique et préfixé par "usr_"
+    * - Le nom d'utilisateur doit être nettoyé (trim et lowercase) et placé dans le champs meta.clean_name
      * - L'âge doit être supérieur ou égal à 18 ans
      * - Les centre d'interet doivent être convertis en lowercase et comptés dans le champs preferences.count
      * - La valeur de retour doit être un tableau associatif contenant les champs suivants : id, meta, preferences, status et created_at
