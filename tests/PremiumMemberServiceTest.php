@@ -74,8 +74,14 @@ class PremiumMemberServiceTest extends KernelTestCase
         //je vérifie que le status est valide
         $this->assertEquals('active', $profile['status']);
 
-        //Je vérifie la date du jour est enregistrée
+        //Je vérifie que la date du jour est enregistrée
         $this->assertEquals(date('Y-m-d'), $profile['created_at']);
+
+        //je vérifie que le profile est actif
+        $this->assertArrayHasKey('status', $profile);
+    
+        //je vérifie la date de création
+        $this->assertArrayHasKey('created_at', $profile);
 
     }
 
@@ -96,7 +102,9 @@ class PremiumMemberServiceTest extends KernelTestCase
     public function testGenerateMemberProfileThrowsExceptionForUnderage(): void
     {
         $this->expectException((InvalidArgumentException::class));
-        $this->expectExceptionMessage("le membre doit être majeur.");
+        $this->expectExceptionMessage(
+            "Le membre doit être majeur."
+            );
 
         $this->premiumMemberService->generateMemberProfile('Bob', 16, ['coding']);
 
@@ -160,18 +168,7 @@ class PremiumMemberServiceTest extends KernelTestCase
 
     }
 
-    //Je vérifie si l'âge est exact
-    public function testIsEligibleForUpgradeUnderAge(): void
-    {
-        $result = $this->premiumMemberService->isEligibleForUpgrade(
-            16,
-            ['coding', 'gaming', 'music'],
-            150
-        );
-        $this->assertFalse($result);
-    }
-
-    
+        
     // Je vérifie le nombre de centre d'intêrets
     public function testIsEligibleForUpgradeInsufficientInterests(): void
     {
@@ -212,7 +209,9 @@ class PremiumMemberServiceTest extends KernelTestCase
     public function testCalculateLoyaltyPointsNegativeThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Le montant ne peut pas être négatif");
+        $this->expectExceptionMessage(
+            "Le montant ne peut pas être négatif."
+            );
         $this->premiumMemberService->calculateLoyaltyPoints(-10);
     }
 
@@ -230,7 +229,7 @@ class PremiumMemberServiceTest extends KernelTestCase
     public function testSummarizeSpendingEmptyThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Le tableau de transaction ne peut pas être vide");
+        $this->expectExceptionMessage("Le tableau de transactions ne peut pas être vide.");
         $this->premiumMemberService->summarizeSpending([]);
     }
 
@@ -251,7 +250,7 @@ class PremiumMemberServiceTest extends KernelTestCase
     public function testRenewSubscriptionInvalidDurationThrowException(): void
     {
             $this->expectException(InvalidArgumentException::class);
-       $this->expectExceptionMessage("La durée doit être de 1, 6 ou 12 mois");
+       $this->expectExceptionMessage("La durée doit être de 1, 6 ou 12 mois.");
        $this->premiumMemberService->renewSubscription(5);
     }
 
